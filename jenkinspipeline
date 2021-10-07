@@ -1,0 +1,19 @@
+node {
+    stage('Clean Data'){
+        sh 'rm -rf /app/output/*'
+    }
+    stage('Dump data' ){
+        sh """
+        java -jar /app/jar/org.jacoco.cli-0.8.7-nodeps.jar dump --address demo --port 6300 --destfile /app/output/demo.exec --reset
+        """
+    }
+    stage('生成报告'){
+        sh """java -jar /app/jar/org.jacoco.cli-0.8.7-nodeps.jar report /app/output/demo.exec \
+            --classfiles /app/project/target/classes \
+            --sourcefiles /app/project/src/main/java \
+            --html /app/output \
+            --gitRepositoryPath /app/project \
+            --fromCommit master \
+            --toCommit dev"""
+    }
+}

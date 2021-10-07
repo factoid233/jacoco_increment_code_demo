@@ -1,0 +1,33 @@
+version: "3"
+services:
+  demo:
+    image: openjdk:8u92-jdk-alpine
+    container_name: demo
+    volumes:
+      - "./jar:/app"
+    ports:
+      - "8081:8081"
+    command: java -javaagent:/app/jacocoagent-0.8.7.jar=includes=*,address=demo,port=6300,output=tcpserver,dumponexit=false -jar /app/springboot-hello-1.0-SNAPSHOT.jar --server.port=8081
+
+  jenkins:
+    image: jenkins/jenkins:centos7-jdk8
+    container_name: jenkins
+    volumes:
+      - ./jar:/app/jar
+      - ./data/project:/app/project
+      - ./data/jenkins_data:/var/jenkins_home
+      - ./output:/app/output
+    user: "0"
+    ports:
+      - "8080:8080"
+      - "50000"
+    depends_on:
+      - demo
+  nginx:
+    image: nginx:1.21.3-alpine
+    container_name: nginx
+    volumes:
+      - ./nginx_default.conf.template:/etc/nginx/templates/nginx_default.conf.template
+      - ./output:/app
+    ports:
+      - "8082:8082"
