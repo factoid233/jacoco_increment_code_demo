@@ -1,14 +1,18 @@
 node {
+    def uuid = UUID.randomUUID().toString()
+    def exec_path = "/app/output/${uuid}.exec"
+    println(exec_path)
     stage('Clean Data'){
         sh 'rm -rf /app/output/*'
     }
     stage('Dump data' ){
-        sh """
-        java -jar /app/jar/org.jacoco.cli-0.8.7-nodeps.jar dump --address demo --port 6300 --destfile /app/output/demo.exec --reset
-        """
+        // sh """
+        // java -jar /app/jar/org.jacoco.cli-0.8.7-nodeps.jar dump --address demo --port 6300 --destfile /app/output/demo.exec --reset
+        // """
+        sh "java -jar /app/jar/org.jacoco.cli-0.8.7-nodeps.jar dump --address demo --port 6300 --destfile ${exec_path} --reset"
     }
     stage('生成报告'){
-        sh """java -jar /app/jar/org.jacoco.cli-0.8.7-nodeps.jar report /app/output/demo.exec \
+        sh """java -jar /app/jar/org.jacoco.cli-0.8.7-nodeps.jar report ${exec_path} \
             --classfiles /app/project/target/classes \
             --sourcefiles /app/project/src/main/java \
             --html /app/output \
