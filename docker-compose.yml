@@ -10,7 +10,7 @@ services:
     command: java -javaagent:/app/jacocoagent-0.8.7.jar=includes=*,address=demo,port=6300,output=tcpserver,dumponexit=false -jar /app/springboot-hello-1.0-SNAPSHOT.jar --server.port=8081
 
   jenkins:
-    image: jenkins/jenkins:centos7-jdk8
+    image: jenkins/jenkins:lts-jdk11
     container_name: jenkins
     volumes:
       - ./jar:/app/jar
