@@ -8,6 +8,7 @@ services:
     ports:
       - "8081:8081"
     command: java -javaagent:/app/jacocoagent-0.8.7.jar=includes=*,address=demo,port=6300,output=tcpserver,dumponexit=false -jar /app/springboot-hello-1.0-SNAPSHOT.jar --server.port=8081
+    restart: on-failure
 
   jenkins:
     image: jenkins/jenkins:lts-jdk11
@@ -23,6 +24,7 @@ services:
       - "50000"
     depends_on:
       - demo
+    restart: on-failure
   nginx:
     image: nginx:1.21.3-alpine
     container_name: nginx
